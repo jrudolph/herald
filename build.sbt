@@ -13,7 +13,7 @@ description :=
 
 
 libraryDependencies ++= Seq(
-                    "com.tristanhunt" %% "knockoff" % "0.8.0-16",
+                    "org.pegdown" % "pegdown" % "1.1.0",
                     "net.databinder" %% "unfiltered-netty-server" % "0.6.2",
                     "net.liftweb" %% "lift-json" % "2.4",
                     "net.databinder.dispatch" %% "core" % "0.9.0-alpha6",

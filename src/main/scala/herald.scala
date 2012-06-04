@@ -3,10 +3,11 @@ package herald
 import dispatch._
 import java.net.URI
 import java.io.{File,FileInputStream}
-import com.tristanhunt.knockoff.DefaultDiscounter._
 import org.streum.configrity._
-import scala.xml.{NodeSeq,Node}
 import scala.util.control.Exception.allCatch
+import xml.{XML, NodeSeq, Node}
+import org.pegdown.PegDownProcessor
+
 object Herald {
   def heraldCredentialsPath = 
     file(new File(System.getProperty("user.home")), ".herald")
@@ -121,16 +122,17 @@ object Herald {
       mdToXml(versionNotes) ++
         <div class="about"> { mdToXml(about) } </div>
 
+  val pegDown = new PegDownProcessor
   /** @return node sequence from str or Nil if str is null or empty. */
-  private def mdToXml(str: String) = str match {
+  private def mdToXml(str: String): NodeSeq = str match {
     case null | "" => Nil
-    case _ => toXML(knockoff(str))
+    case _ => XML.loadString("<wrapper>"+pegDown.markdownToHtml(str)+"</wrapper>").iterator.toSeq
   }   
 
   /** @return node sequence from file or Nil if file is not found. */
-  private def mdToXml(md: File) =
+  private def mdToXml(md: File): NodeSeq =
     if (md.exists)
-      toXML(knockoff(scala.io.Source.fromFile(md).mkString))
+      mdToXml(scala.io.Source.fromFile(md).mkString)
     else
       Nil
 
